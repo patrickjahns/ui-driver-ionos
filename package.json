@@ -1,22 +1,22 @@
 {
-  "name": "ui-driver-skel",
-  "version": "0.0.2",
-  "description": "Skeleton Rancher UI driver for custom docker-machine drivers",
+  "name": "ui-driver-ionos",
+  "version": "0.0.3",
+  "description": "Rancher UI driver for ionos docker-machine drivers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rancher/ui-driver-skel.git"
+    "url": "git+https://github.com/patrickjahns/ui-driver-ionos.git"
   },
   "author": "Rancher Labs, Inc.",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/rancher/rancher/issues"
+    "url": "https://github.com/patrickjahns/ui-driver-ionos/issues"
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp server",
     "clean": "./node_modules/.bin/gulp clean",
     "build": "./node_modules/.bin/gulp build"
   },
-  "homepage": "https://github.com/rancher/ui-driver-skel#readme",
+  "homepage": "https://github.com/patrickjahns/ui-driver-ionos",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "babel-plugin-add-module-exports": "^1.0.0",
