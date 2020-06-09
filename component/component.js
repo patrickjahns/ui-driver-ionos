@@ -23,9 +23,10 @@ const defaultBase  = 1024;
 
 /*!!!!!!!!!!!DO NOT CHANGE START!!!!!!!!!!!*/
 export default Ember.Component.extend(NodeDriver, {
-  driverName: '%%DRIVERNAME%%',
-  config:     alias('model.%%DRIVERNAME%%Config'),
-  app:        service(),
+  driverName:       '%%DRIVERNAME%%',
+  config:           alias('model.%%DRIVERNAME%%Config'),
+  app:              service(),
+  needCredentials:  true,
 
   init() {
     // This does on the fly template compiling, if you mess with this :cry:
@@ -45,8 +46,8 @@ export default Ember.Component.extend(NodeDriver, {
     // bootstrap is called by rancher ui on 'init', you're better off doing your setup here rather then the init function to ensure everything is setup correctly
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
-      cpuCount: 2,
-      memorySize: 2048,
+      cores: 2,
+      ram: 2048,
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
@@ -64,7 +65,7 @@ export default Ember.Component.extend(NodeDriver, {
     // Add more specific errors
 
     // Check something and add an error entry if it fails:
-    if ( parseInt(get(this, 'config.memorySize'), defaultRadix) < defaultBase ) {
+    if ( parseInt(get(this, 'config.ram'), defaultRadix) < defaultBase ) {
       errors.push('Memory Size must be at least 1024 MB');
     }
 
@@ -78,6 +79,33 @@ export default Ember.Component.extend(NodeDriver, {
       return true;
     }
   },
-
+  actions: {
+    getData() {
+      this.set('gettingData', true);
+      let that = this;
+      Promise.all([this.apiRequest('/v5/locations')]).then(function (responses) {
+        that.setProperties({
+          errors: [],
+          needCredentials: false,
+          gettingData: false,
+        });
+      }).catch(function (err) {
+        err.then(function (msg) {
+          that.setProperties({
+            errors: ['Error received from ionos: ' + msg.error.message],
+            gettingData: false
+          })
+        })
+      })
+    },
+  },
+  apiRequest(path) {
+    return fetch('https://api.ionos.com/cloudapi' + path, {
+      headers: {
+        'Authorization': 'Basic ' + btoa(this.get('model.%%DRIVERNAME%%Config.username') + ':' + this.get('model.%%DRIVERNAME%%Config.password')),
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.ok ? res.json() : Promise.reject(res.json()));
+  }
   // Any computed properties or custom logic can go here
 });

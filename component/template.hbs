@@ -1,4 +1,37 @@
 <section class="horizontal-form">
+    {{#if needCredentials}}
+    <form>
+      <div class="over-hr r-mb20">
+        <span>Account Access</span>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-2">
+          <label class="form-control-static">Username</label>
+        </div>
+        <div class="col-md-10">
+          {{input value=model.profitbricksConfig.username classNames="form-control" placeholder="Your ionos username"}}
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-2">
+          <label class="form-control-static">Password</label>
+        </div>
+        <div class="col-md-10">
+          {{input type="password" value=model.profitbricksConfig.password classNames="form-control" placeholder="Your ionos password"}}
+        </div>
+      </div>
+      {{top-errors errors=errors}}
+      <div class="footer-actions">
+        {{#if gettingData}}
+        <button class="btn bg-primary btn-disabled">
+          <i class="icon icon-spinner icon-spin"></i> {{t 'generic.loading'}}</button>
+        {{else}}
+        <button {{action "getData" }} class="btn bg-primary" disabled={{not model.profitbricksConfig.password}}>Configure Server</button>
+        {{/if}}
+        <button {{action "cancel"}} class="btn bg-transparent">{{t 'generic.cancel'}}</button>
+      </div>
+    </form>
+  {{else}}
   {{#accordion-list showExpandAll=false as | al expandFn |}}
     {{!-- This line shows the driver title which you don't have to change it --}}
     <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
@@ -12,10 +45,10 @@
         </div>
 
         <div class="col span-1">
-          {{config.cpuCount}}
+          {{config.core}}
         </div>
         <div class="col span-3">
-          {{input-slider value=config.cpuCount valueMin=1 valueMax=32}}
+          {{input-slider value=config.core valueMin=1 valueMax=32}}
         </div>
 
         <div class="col span-2 col-inline">
@@ -23,7 +56,7 @@
         </div>
         <div class="col span-4">
           <div class="input-group">
-            {{input-integer min=1 value=config.memorySize classNames="form-control"}}
+            {{input-integer min=1 value=config.ram classNames="form-control"}}
             <div class="input-group-addon bg-default">MB</div>
           </div>
         </div>
@@ -56,4 +89,5 @@
 
   {{!-- This component shows the Create and Cancel buttons --}}
   {{save-cancel save="save" cancel="cancel"}}
+  {{/if}}
 </section>
